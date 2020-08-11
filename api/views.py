@@ -1,50 +1,36 @@
-# from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework import mixins
+from rest_framework import generics
 from api.models import Book
 from api.serializers import BookSerializer
 
-@csrf_exempt
-def book_list(request):
+class BookList( mixins.ListModelMixin,
+                mixins.CreateModelMixin,
+                generics.GenericAPIView ):
     """
     List all code snippets, or create a new snippet.
     """
-    if request.method == 'GET':
-        book = Book.objects.all()
-        serializer = BookSerializer(book, many=True)
-        return JsonResponse(serializer.data, safe=False)
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-@csrf_exempt
-def book_detail(request, pk):
-    """
-    Retrieve, update or delete
-    """
-    try:
-        book = Book.objects.get(pk=pk)
-    except Book.DoesNotExist:
-        return HttpResponse(status=404)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
-    if request.method == 'GET':
-        serializer = BookSerializer(book)
-        return JsonResponse(serializer.data)
+class BookDetail(   mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(book, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
-    elif request.method == 'DELETE':
-        book.delete()
-        return HttpResponse(status=204)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
