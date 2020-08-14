@@ -6,10 +6,13 @@ from books.serializers import BookSerializer
 from rest_framework.renderers import TemplateHTMLRenderer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 
 class BookList(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     queryset = Book.objects.all()
+    renderer_classes = [JSONRenderer]
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'authors']

@@ -25,7 +25,7 @@ SECRET_KEY = '9e$g(0m6%!4gj3mzgu3txm58j$@wuh@xhig5l%282#p*%-7ovw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [tomwalczak.pythonanywhere.com]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -123,6 +123,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-
-
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
