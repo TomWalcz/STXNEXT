@@ -1,17 +1,25 @@
 from rest_framework import mixins
 from rest_framework import generics
 from books.models import Book
+from rest_framework.response import Response
 from books.serializers import BookSerializer
-# import django_filters.rest_framework
-# import django_filters
+from rest_framework.renderers import TemplateHTMLRenderer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 
-class BookList(generics.ListAPIView):
+class BookList(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     queryset = Book.objects.all()
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'authors']
+
+    def post(self, request, format=None):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookDetail(generics.RetrieveAPIView):
