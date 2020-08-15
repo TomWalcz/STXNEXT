@@ -1,4 +1,4 @@
-from rest_framework import mixins
+# from rest_framework import mixins
 from rest_framework import generics
 from books.models import Book
 from rest_framework.response import Response
@@ -12,10 +12,10 @@ from rest_framework.renderers import JSONRenderer
 class BookList(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     queryset = Book.objects.all()
-    renderer_classes = [JSONRenderer]
+    # renderer_classes = [JSONRenderer]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['title', 'authors']
+    filterset_fields = ['title', 'authors', 'publishedDate']
 
     def post(self, request, format=None):
         serializer = BookSerializer(data=request.data)
@@ -28,4 +28,11 @@ class BookList(generics.ListCreateAPIView):
 class BookDetail(generics.RetrieveAPIView):
 
     queryset = Book.objects.all()
+    # renderer_classes = [TemplateHTMLRenderer]
     serializer_class = BookSerializer
+
+    def get(self, request, *args, **kwargs):
+        # self.object = self.get_object()
+        return self.retrieve(request, *args, **kwargs)
+
+        
