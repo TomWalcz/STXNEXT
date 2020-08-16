@@ -8,9 +8,14 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
 """
 
 import os
+import sys
+
+path = '/home/TomWalczak/STXNEXT'
+if path not in sys.path:
+    sys.path.append(path)
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'STXNEXT.settings')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'STXNEXT.settings'
 
 application = get_wsgi_application()
